@@ -64,12 +64,12 @@ jobs:
       # Build Docker imidža
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-kotlin-app:latest .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-kotlin-app:latest .
       
       # Push Docker imidža na DockerHub
       - name: Push Docker image to DockerHub
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/my-kotlin-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-kotlin-app:latest
         
   deploy:
     runs-on: ubuntu-latest
