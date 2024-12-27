@@ -19,7 +19,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'adoptopenjdk'
+        distribution: 'temurin'
 
     # Testiranje (ako imaš testove)
     - name: Run tests
