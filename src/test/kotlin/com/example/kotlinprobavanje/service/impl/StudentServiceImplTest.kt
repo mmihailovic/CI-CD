@@ -11,7 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-class StudentServiceImplTest (@InjectMocks val studentServiceImpl: StudentServiceImpl) {
+class StudentServiceImplTest {
+    @InjectMocks
+    private lateinit var studentServiceImpl: StudentServiceImpl
+
     companion object {
         const val STUDENT_ID: Long = 15;
     }
