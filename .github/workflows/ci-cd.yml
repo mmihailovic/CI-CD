@@ -21,6 +21,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # Dodeljivanje prava za izvršenje gradlew fajlu
+    - name: Give execute permission to gradlew
+      run: chmod +x ./gradlew
+
     # Testiranje (ako imaš testove)
     - name: Run tests
       run: |
