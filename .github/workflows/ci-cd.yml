@@ -39,6 +39,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Dodeljivanje prava za izvršenje gradlew fajlu
+      - name: Give execute permission to gradlew
+        run: chmod +x ./gradlew
+
       - name: Build jar file
         run: |
           ./gradlew build
