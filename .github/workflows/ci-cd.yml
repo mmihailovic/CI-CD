@@ -39,6 +39,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Setovanje JDK za Kotlin/Gradle projekat
+      - name: Set up JDK 18
+        uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
       # Dodeljivanje prava za izvršenje gradlew fajlu
       - name: Give execute permission to gradlew
         run: chmod +x ./gradlew
