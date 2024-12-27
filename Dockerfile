@@ -1,5 +1,5 @@
 FROM openjdk:17
 WORKDIR /app
-COPY ./target/my-kotlin-app-0.1.jar /app/my-kotlin-app-0.1.jar
+COPY ./build/libs/KotlinProbavanje-0.0.1-SNAPSHOT.jar /app/KotlinProbavanje-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "my-kotlin-app-0.1.jar"]
+ENTRYPOINT ["java", "-jar", "KotlinProbavanje-0.0.1-SNAPSHOT.jar"]
