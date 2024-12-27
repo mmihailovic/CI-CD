@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:18
 WORKDIR /app
 COPY ./build/libs/KotlinProbavanje-0.0.1-SNAPSHOT.jar /app/KotlinProbavanje-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
