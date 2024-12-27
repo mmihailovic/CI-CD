@@ -1,0 +1,84 @@
+name: CI/CD Pipeline for Kubernetes Deployment
+
+on:
+  push:
+    branches:
+      - master  # Ovaj workflow će se okinuti na push u master granu
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Pokreće se na Ubuntu runneru
+
+    steps:
+    # Checkout koda
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Setovanje JDK za Kotlin/Gradle projekat
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Testiranje (ako imaš testove)
+    - name: Run tests
+      run: |
+        ./gradlew test
+    
+  build:
+      runs-on: ubuntu-latest  # Pokreće se na Ubuntu runneru
+      needs: test  # Build zavisi od uspešnog izvršenja testova
+  
+      steps:
+      # Checkout koda (samo za sigurnost)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Logovanje na DockerHub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  
+      # Build Docker imidža
+      - name: Build Docker image
+        run: |
+          docker build -t my-kotlin-app:latest .
+
+      # Push Docker imidža na DockerHub
+      - name: Push Docker image to DockerHub
+        run: |
+          docker push my-kotlin-app:latest
+        
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ovaj job će se izvršiti nakon što se završi build job
+
+    steps:
+    # Checkout koda (da bi mogao da se koristi u deploymentu)
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Kreiranje DockerHub autentifikacije za Kubernetes
+    - name: Create DockerHub secret for Kubernetes
+      run: |
+        kubectl get secret dockerhub-secret || kubectl create secret docker-registry dockerhub-secret \
+          --docker-server=https://index.docker.io/v1/ \
+          --docker-username="${{ secrets.DOCKERHUB_USERNAME }}" \
+          --docker-password="${{ secrets.DOCKERHUB_PASSWORD }}" \
+
+    # Setovanje Kubernetes konfiguracije (prethodno postavljen kubeconfig)
+    - name: Set up Kubernetes config
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}  # Ovo koristi GitHub Secret koji si postavio
+      run: |
+        echo "${KUBECONFIG}" > kubeconfig.yaml
+        export KUBECONFIG=$(pwd)/kubeconfig.yaml
+
+    # Primena Kubernetes manifestacija (deploy aplikacije)
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
