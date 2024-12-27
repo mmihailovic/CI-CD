@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service  # Naziv servisa
+spec:
+  selector:
+    app: my-app  # Oznaka koja se koristi za povezivanje sa deployment-om
+  ports:
+    - protocol: TCP
+      port: 8080  # Port na kojem servis izlaže aplikaciju
+      targetPort: 8080  # Port na kojem aplikacija zaista sluša
+  type: NodePort

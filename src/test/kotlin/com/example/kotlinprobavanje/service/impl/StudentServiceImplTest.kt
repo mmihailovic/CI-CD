@@ -11,13 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-class StudentServiceImplTest (@InjectMocks val studentServiceImpl: StudentServiceImpl, @Mock val studentRepository: StudentRepository) {
+class StudentServiceImplTest (@InjectMocks val studentServiceImpl: StudentServiceImpl) {
     companion object {
         const val STUDENT_ID: Long = 15;
     }
 
     @Test
     fun updateStudent() {
-        when(studentRepository.findById(STUDENT_ID)) { Optional.empty() }
+
     }
 }
