@@ -79,24 +79,16 @@ jobs:
     # Checkout koda (da bi mogao da se koristi u deploymentu)
     - name: Checkout code
       uses: actions/checkout@v4
-
-    # Setovanje Kubernetes konfiguracije (prethodno postavljen kubeconfig)
-    - name: Set up Kubernetes config
-      env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}  # Ovo koristi GitHub Secret koji si postavio
+    - name: Start minikube
+      uses: medyagh/setup-minikube@latest
+      # now you can run kubectl to see the pods in the cluster
+    - name: Try the cluster!
+      run: kubectl get pods
+    - name: Deploy service
       run: |
-        echo "${KUBECONFIG}" > kubeconfig.yaml
-        export KUBECONFIG=$(pwd)/kubeconfig.yaml
-
-      # Kreiranje DockerHub autentifikacije za Kubernetes
-    # - name: Create DockerHub secret for Kubernetes
-    #   run: |
-    #     kubectl get secret dockerhub-secret || kubectl create secret docker-registry dockerhub-secret \
-    #       --docker-server=https://index.docker.io/v1/ \
-    #       --docker-username="${{ secrets.DOCKERHUB_USERNAME }}" \
-    #       --docker-password="${{ secrets.DOCKERHUB_PASSWORD }}" \
-
-    # Primena Kubernetes manifestacija (deploy aplikacije)
-    - name: Deploy to Kubernetes
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+    - name: Check pods
       run: |
         kubectl get pods
+        kubectl get services
