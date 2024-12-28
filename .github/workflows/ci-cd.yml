@@ -39,6 +39,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Setovanje JDK za Kotlin/Gradle projekat
+      - name: Set up JDK 18
+        uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
       # Dodeljivanje prava za izvršenje gradlew fajlu
       - name: Give execute permission to gradlew
         run: chmod +x ./gradlew
@@ -57,12 +64,12 @@ jobs:
       # Build Docker imidža
       - name: Build Docker image
         run: |
-          docker build -t my-kotlin-app:latest .
-
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-kotlin-app:latest .
+      
       # Push Docker imidža na DockerHub
       - name: Push Docker image to DockerHub
         run: |
-          docker push my-kotlin-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-kotlin-app:latest
         
   deploy:
     runs-on: ubuntu-latest
@@ -73,14 +80,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Kreiranje DockerHub autentifikacije za Kubernetes
-    - name: Create DockerHub secret for Kubernetes
-      run: |
-        kubectl get secret dockerhub-secret || kubectl create secret docker-registry dockerhub-secret \
-          --docker-server=https://index.docker.io/v1/ \
-          --docker-username="${{ secrets.DOCKERHUB_USERNAME }}" \
-          --docker-password="${{ secrets.DOCKERHUB_PASSWORD }}" \
-
     # Setovanje Kubernetes konfiguracije (prethodno postavljen kubeconfig)
     - name: Set up Kubernetes config
       env:
@@ -88,6 +87,14 @@ jobs:
       run: |
         echo "${KUBECONFIG}" > kubeconfig.yaml
         export KUBECONFIG=$(pwd)/kubeconfig.yaml
+
+      # Kreiranje DockerHub autentifikacije za Kubernetes
+    # - name: Create DockerHub secret for Kubernetes
+    #   run: |
+    #     kubectl get secret dockerhub-secret || kubectl create secret docker-registry dockerhub-secret \
+    #       --docker-server=https://index.docker.io/v1/ \
+    #       --docker-username="${{ secrets.DOCKERHUB_USERNAME }}" \
+    #       --docker-password="${{ secrets.DOCKERHUB_PASSWORD }}" \
 
     # Primena Kubernetes manifestacija (deploy aplikacije)
     - name: Deploy to Kubernetes
