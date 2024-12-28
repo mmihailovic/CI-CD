@@ -99,5 +99,5 @@ jobs:
     # Primena Kubernetes manifestacija (deploy aplikacije)
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f k8s/deployment.yaml
-        kubectl apply -f k8s/service.yaml
+        minikube status
+        kubectl get pods
