@@ -19,5 +19,3 @@ spec:
           image: mmihailovic/my-kotlin-app:latest
           ports:
             - containerPort: 8080
-          imagePullSecrets:
-            - name: dockerhub-secret
