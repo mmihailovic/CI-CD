@@ -82,7 +82,7 @@ jobs:
     - name: Set up kubeconfig
       run: |
         sudo mkdir -p ${HOME}/.kube    
-        echo ${{ secrets.MINIKUBE_CA_CRT }} | sed 's/\r$//' > ${HOME}/.kube/ca.crt
+        echo ${{ secrets.MINIKUBE_CA_CRT }} > ${HOME}/.kube/ca.crt
         echo ${{ secrets.MINIKUBE_CLIENT_CRT }} > ${HOME}/.kube/client.crt
         echo ${{ secrets.MINIKUBE_CLIENT_KEY }} > ${HOME}/.kube/client.key
         sudo more ${HOME}/.kube/ca.crt
