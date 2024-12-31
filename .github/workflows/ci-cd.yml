@@ -85,11 +85,6 @@ jobs:
         echo ${{ secrets.MINIKUBE_CA_CRT }} > ${HOME}/.kube/ca.crt
         echo ${{ secrets.MINIKUBE_CLIENT_CRT }} > ${HOME}/.kube/client.crt
         echo ${{ secrets.MINIKUBE_CLIENT_KEY }} > ${HOME}/.kube/client.key
-        sudo more ${HOME}/.kube/ca.crt
-        ls -l ${HOME}/.kube/ca.crt
-        sudo openssl x509 -in ${HOME}/.kube/ca.crt -text -noout
-        sudo openssl x509 -in ${HOME}/.kube/client.crt -text -noout
-        sudo openssl rsa -in ${HOME}/.kube/client.key -check
       shell: bash
     - name: Deploy service
       run: |
