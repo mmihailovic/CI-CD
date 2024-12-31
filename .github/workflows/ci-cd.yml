@@ -90,7 +90,7 @@ jobs:
         sudo openssl x509 -in ${HOME}/.kube/ca.crt -text -noout
         sudo openssl x509 -in ${HOME}/.kube/client.crt -text -noout
         sudo openssl rsa -in ${HOME}/.kube/client.key -check
-        echo ${{ secrets.KUBECONFIG }} > ${HOME}/.kube/config
+        echo "${{ secrets.KUBECONFIG }}" > ${HOME}/.kube/config
       shell: bash
     - name: Deploy service
       run: |
