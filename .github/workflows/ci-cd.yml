@@ -79,17 +79,24 @@ jobs:
     # Checkout koda (da bi mogao da se koristi u deploymentu)
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: Start minikube
-      uses: medyagh/setup-minikube@latest
-      # now you can run kubectl to see the pods in the cluster
-    - name: Try the cluster!
-      run: kubectl get pods
+    - name: Set up kubeconfig
+      run: |
+        sudo mkdir -p ${HOME}/.kube    
+        echo ${{ secrets.MINIKUBE_CA_CRT }} | sed 's/\r$//' > ${HOME}/.kube/ca.crt
+        echo ${{ secrets.MINIKUBE_CLIENT_CRT }} > ${HOME}/.kube/client.crt
+        echo ${{ secrets.MINIKUBE_CLIENT_KEY }} > ${HOME}/.kube/client.key
+        sudo more ${HOME}/.kube/ca.crt
+        ls -l ${HOME}/.kube/ca.crt
+        sudo openssl x509 -in ${HOME}/.kube/ca.crt -text -noout
+        sudo openssl x509 -in ${HOME}/.kube/client.crt -text -noout
+        sudo openssl rsa -in ${HOME}/.kube/client.key -check
+        echo ${{ secrets.KUBECONFIG }} | base64 --decode > ${HOME}/.kube/config
+        echo ${HOME}/.kube/config
+        kubectl config view --raw
+      shell: bash
     - name: Deploy service
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
-    - name: Check pods
-      run: |
-        kubectl get pods
-        kubectl get services
-        minikube service list
+
+    
