@@ -91,7 +91,6 @@ jobs:
         sudo openssl x509 -in ${HOME}/.kube/client.crt -text -noout
         sudo openssl rsa -in ${HOME}/.kube/client.key -check
         echo ${{ secrets.KUBECONFIG }} | base64 --decode > ${HOME}/.kube/config
-        kubectl config view --raw
       shell: bash
     - name: Deploy service
       run: |
