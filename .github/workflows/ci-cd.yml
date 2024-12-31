@@ -82,9 +82,12 @@ jobs:
     - name: Set up kubeconfig
       run: |
         mkdir -p ${HOME}/.kube
-        echo ${{ secrets.MINIKUBE_CA_CRT }} > ${HOME}/.kube/ca.crt
-        echo ${{ secrets.MINIKUBE_CLIENT_CRT }} > ${HOME}/.kube/client.crt
-        echo ${{ secrets.MINIKUBE_CLIENT_KEY }} > ${HOME}/.kube/client.key
+        echo ${{ secrets.MINIKUBE_CA_CRT }} | base64 --decode > ${HOME}/.kube/ca.crt
+        cat ${HOME}/.kube/ca.crt
+        echo ${{ secrets.MINIKUBE_CLIENT_CRT }} | base64 --decode > ${HOME}/.kube/client.crt
+        cat ${HOME}/.kube/client.crt
+        echo ${{ secrets.MINIKUBE_CLIENT_KEY }} | base64 --decode > ${HOME}/.kube/client.key
+        cat ${HOME}/.kube/client.key
         echo ${{ secrets.KUBECONFIG }} | base64 --decode > ${HOME}/.kube/config
         cat ${HOME}/.kube/config
     - name: Deploy service
